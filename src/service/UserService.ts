@@ -3,7 +3,7 @@ import HandlerSuccess from 'handler/HandlerSuccess';
 import jwt from 'jsonwebtoken';
 import { decrypt, encrypt } from 'utils/crypt';
 import { formatDate, generateRandomString } from 'utils/utils';
-import { ICreateUser, IGetUser, IUserRole } from 'interface/IUser';
+import { ICreateUser, IGetUser, IUser } from 'interface/IUser';
 import { User } from '@prisma/client';
 import { UserRepository } from 'repository/UserRepository';
 
@@ -50,7 +50,7 @@ export class UserService {
     return findAllMapped;
   }
 
-  async delete(id: number): Promise<HandlerSuccess> {
+  public async delete(id: number): Promise<HandlerSuccess> {
     await this.getById(id);
     await this.repository.delete(id);
     return new HandlerSuccess('Usuário excluído com sucesso');
@@ -86,14 +86,14 @@ export class UserService {
     }
   }
 
-  private async updateAuthToken(user: User): Promise<IUserRole | null> {
+  private async updateAuthToken(user: User): Promise<IUser | null> {
     const updated = await this.repository.update(user.id, {
       authToken: generateRandomString(100),
     });
     return updated;
   }
 
-  private generateToken(user: IUserRole | null): string {
+  private generateToken(user: IUser | null): string {
     const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
       expiresIn: '1d',
     });

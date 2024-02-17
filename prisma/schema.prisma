@@ -12,19 +12,25 @@ enum RoleEnum {
   user
 }
 
+enum CharacterClassEnum {
+  melee
+  ranged
+}
+
 model User {
-  id         Int       @id @default(autoincrement())
-  email      String    @unique @db.VarChar(255)
-  password   String
-  name       String    @unique @db.VarChar(20)
-  level      Int       @default(1)
-  gold       Int       @default(5000)
-  diamond    Int       @default(0)
-  bannedTime DateTime? @map("banned_time")
-  authToken  String?   @map("auth_token")
-  createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime  @default(now()) @updatedAt @map("updated_at")
-  roles      Role[]
+  id             Int             @id @default(autoincrement())
+  email          String          @unique @db.VarChar(255)
+  password       String
+  name           String          @unique @db.VarChar(20)
+  level          Int             @default(1)
+  gold           Int             @default(5000)
+  diamond        Int             @default(0)
+  bannedTime     DateTime?       @map("banned_time")
+  authToken      String?         @map("auth_token")
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @default(now()) @updatedAt @map("updated_at")
+  roles          Role[]
+  userCharacters UserCharacter[]
 
   @@map(name: "tb_user")
 }
@@ -38,4 +44,36 @@ model Role {
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map(name: "tb_user_role")
+}
+
+model Character {
+  id             Int                @id @default(autoincrement())
+  name           String             @unique @db.VarChar(255)
+  description    String?
+  characterClass CharacterClassEnum @map("character_class")
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @default(now()) @updatedAt @map("updated_at")
+  userCharacters UserCharacter[]
+
+  @@map(name: "tb_character")
+}
+
+model UserCharacter {
+  id                 Int       @id @default(autoincrement())
+  level              Int       @default(1)
+  strength           Int       @default(1)
+  intelligence       Int       @default(1)
+  dexterity          Int       @default(1)
+  experience         Int       @default(0)
+  attributePoint     Int       @default(0) @map("attribute_point")
+  attributePointUsed Int       @default(0) @map("attribute_point_used")
+  slot               Int
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             Int       @map("user_id")
+  character          Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId        Int       @map("character_id")
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@map(name: "tb_user_character")
 }

@@ -1,23 +1,41 @@
-import { IUserRole } from 'interface/IUser';
+import { IUser } from 'interface/IUser';
 import { PrismaClient, User } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export class UserRepository {
-  public async save(user: User): Promise<User> {
+  public async save(data: User): Promise<User> {
     return await prisma.user.create({
       data: {
-        ...user,
+        ...data,
         roles: {
           create: {
             name: 'user',
+          },
+        },
+        userCharacters: {
+          createMany: {
+            data: [
+              {
+                characterId: 1,
+                slot: 1,
+              },
+              {
+                characterId: 2,
+                slot: 2,
+              },
+              {
+                characterId: 3,
+                slot: 3,
+              },
+            ],
           },
         },
       },
     });
   }
 
-  public async update(id: number, data: Partial<User>): Promise<IUserRole | null> {
+  public async update(id: number, data: Partial<User>): Promise<IUser | null> {
     return await prisma.user.update({
       where: { id },
       data,
@@ -27,7 +45,7 @@ export class UserRepository {
     });
   }
 
-  public async findAll(): Promise<IUserRole[]> {
+  public async findAll(): Promise<IUser[]> {
     return await prisma.user.findMany({
       include: {
         roles: true,
@@ -35,7 +53,7 @@ export class UserRepository {
     });
   }
 
-  public async findById(id: number): Promise<IUserRole | null> {
+  public async findById(id: number): Promise<IUser | null> {
     return await prisma.user.findUnique({
       where: { id },
       include: {

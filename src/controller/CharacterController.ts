@@ -1,17 +1,17 @@
 import logger from 'utils/logger';
-import { ICreateUser, IUserAuth } from 'interface/IUser';
+import { CharacterService } from 'service/CharacterService';
+import { ICreateCharacter, IUpdateCharacter } from 'interface/ICharacter';
 import { NextFunction, Request, Response } from 'express';
-import { UserService } from 'service/UserService';
 
-const service = new UserService();
+const service = new CharacterService();
 
-export class UserController {
+export class CharacterController {
   public async create(
-    request: Request<Record<string, unknown>, unknown, ICreateUser>,
+    request: Request<Record<string, unknown>, unknown, ICreateCharacter>,
     response: Response,
     next: NextFunction
   ) {
-    logger.info(`Create user ${request.body.email}`);
+    logger.info(`Create character ${request.body.name}`);
     try {
       const handler = await service.create(request.body);
       return handler.toJSON(response);
@@ -20,17 +20,22 @@ export class UserController {
     }
   }
 
-  public async getMe(request: Request, response: Response, next: NextFunction) {
-    logger.info(`Get user me ${request.user.id}`);
+  public async update(
+    request: Request<Record<string, unknown>, unknown, IUpdateCharacter>,
+    response: Response,
+    next: NextFunction
+  ) {
+    logger.info(`Update character ${request.body.id}`);
     try {
-      return response.status(200).json(await service.getById(request.user.id));
+      const handler = await service.update(request.body);
+      return handler.toJSON(response);
     } catch (error) {
       next(error);
     }
   }
 
   public async get(request: Request<{ id: string }>, response: Response, next: NextFunction) {
-    logger.info(`Get user id ${request.params.id}`);
+    logger.info(`Get character id ${request.params.id}`);
     try {
       return response.status(200).json(await service.getById(+request.params.id));
     } catch (error) {
@@ -39,7 +44,7 @@ export class UserController {
   }
 
   public async getAll(_request: Request, response: Response, next: NextFunction) {
-    logger.info('Get all user');
+    logger.info('Get all character');
     try {
       return response.status(200).json(await service.getAll());
     } catch (error) {
@@ -48,25 +53,10 @@ export class UserController {
   }
 
   public async delete(request: Request<{ id: string }>, response: Response, next: NextFunction) {
-    logger.info(`Delete user id ${request.params.id}`);
+    logger.info(`Delete character id ${request.params.id}`);
     try {
       const handler = await service.delete(+request.params.id);
       return handler.toJSON(response);
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  public async auth(
-    request: Request<Record<string, unknown>, unknown, IUserAuth>,
-    response: Response,
-    next: NextFunction
-  ) {
-    logger.info(`Authenticate user ${request.body.email}`);
-    try {
-      return response
-        .status(200)
-        .json(await service.authenticate(request.body.email, request.body.password));
     } catch (error) {
       next(error);
     }

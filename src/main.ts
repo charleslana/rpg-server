@@ -14,13 +14,16 @@ import { PrismaClient } from '@prisma/client';
 import { Server } from 'socket.io';
 
 const app = express();
+
 app.use(express.json());
+
 app.use(
   cors({
     origin: '*',
     credentials: true,
   })
 );
+
 app.use(
   rateLimit({
     windowMs: 1 * 60 * 1000,
@@ -33,24 +36,31 @@ app.use(
     },
   })
 );
+
 app.use(routes);
+
 app.use(errors());
+
 app.use(errorMiddleware);
+
 app.use((request: Request, response: Response) => {
   logger.info(`Route ${request.url} not found`);
   return new HandlerSuccess('Rota não encontrada', 404).toJSON(response);
 });
 
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
     origin: '*',
     credentials: true,
   },
 });
+
 instrument(io, {
   auth: false,
 });
+
 configureSockets(io);
 
 const start = async () => {

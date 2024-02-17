@@ -1,3 +1,4 @@
+import sanitizeHtml from 'sanitize-html';
 import { celebrate, Joi, Segments } from 'celebrate';
 
 export const idParamMiddleware = () => {
@@ -9,4 +10,11 @@ export const idParamMiddleware = () => {
     },
     { abortEarly: false }
   );
+};
+
+export const escapeTagsHTML = (input: string): string => {
+  return sanitizeHtml(input, {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
 };

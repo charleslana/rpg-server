@@ -1,8 +1,8 @@
-import { IUserRole } from 'interface/IUser';
+import { IUser } from 'interface/IUser';
 
 type DecodeType = {
   iat: number;
-  user: IUserRole;
+  user: IUser;
 };
 
 export default DecodeType;

@@ -1,6 +1,6 @@
 import { Role, User } from '@prisma/client';
 
-export interface IUserRole extends User {
+export interface IUser extends User {
   roles: Role[];
 }
 

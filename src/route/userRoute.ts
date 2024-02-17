@@ -11,11 +11,17 @@ const userRoute = express.Router();
 const controller = new UserController();
 
 userRoute.route('/').post(userCreateMiddleware(), controller.create);
+
+userRoute.route('/me').get(authenticateMiddleware, controller.getMe);
+
 userRoute.route('/:id').get(idParamMiddleware(), authenticateMiddleware, controller.get);
+
 userRoute.route('/').get(authenticateMiddleware, controller.getAll);
+
 userRoute
   .route('/:id')
   .delete(authenticateMiddleware, roleMiddleware([RoleEnum.admin]), controller.delete);
+
 userRoute.route('/auth').post(userAuthMiddleware(), controller.auth);
 
 export default userRoute;
