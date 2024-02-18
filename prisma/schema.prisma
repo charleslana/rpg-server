@@ -67,7 +67,7 @@ model UserCharacter {
   experience         Int       @default(0)
   attributePoint     Int       @default(0) @map("attribute_point")
   attributePointUsed Int       @default(0) @map("attribute_point_used")
-  slot               Int
+  slot               Int?
   user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId             Int       @map("user_id")
   character          Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
