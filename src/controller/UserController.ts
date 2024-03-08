@@ -71,4 +71,17 @@ export class UserController {
       next(error);
     }
   }
+
+  public async refreshAccessToken(request: Request, response: Response, next: NextFunction) {
+    try {
+      const refreshToken = request.body.refreshToken;
+      if (!refreshToken) {
+        return response.status(401).json({ error: true, message: 'Token de atualização ausente' });
+      }
+      const accessToken = await service.refreshAccessToken(refreshToken);
+      return response.status(200).json({ accessToken });
+    } catch (error) {
+      next(error);
+    }
+  }
 }

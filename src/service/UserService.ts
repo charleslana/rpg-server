@@ -1,3 +1,4 @@
+import DecodeType from 'types/DecodeType';
 import HandlerError from 'handler/HandlerError';
 import HandlerSuccess from 'handler/HandlerSuccess';
 import jwt from 'jsonwebtoken';
@@ -56,17 +57,39 @@ export class UserService {
     return new HandlerSuccess('Usuário excluído com sucesso');
   }
 
-  public async authenticate(email: string, password: string): Promise<{ token: string }> {
+  public async authenticate(
+    email: string,
+    password: string
+  ): Promise<{ accessToken: string; refreshToken: string }> {
     const find = await this.repository.findByEmail(email);
     if (!find) {
       throw new HandlerError('Usuário ou senha inválida', 403);
     }
     this.validateUserLogin(find, password);
     const updated = await this.updateAuthToken(find);
-    const token = this.generateToken(updated);
+    const accessToken = this.generateAccessToken(updated);
+    const refreshToken = this.generateRefreshToken(updated);
     return {
-      token: token,
+      accessToken,
+      refreshToken,
     };
+  }
+
+  public async refreshAccessToken(refreshToken: string): Promise<string> {
+    try {
+      const decoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_TOKEN_SECRET as string
+      ) as DecodeType;
+      const find = await this.repository.findById(decoded.user.id);
+      if (!find) {
+        throw new HandlerError('Acesso não encontrado', 403);
+      }
+      const updated = await this.updateAuthToken(find);
+      return this.generateAccessToken(updated);
+    } catch (error) {
+      throw new HandlerError('Erro ao renovar token de acesso', 403);
+    }
   }
 
   public async getUserByIdAndAuthToken(id: number, authToken: string | null): Promise<User | null> {
@@ -93,10 +116,15 @@ export class UserService {
     return updated;
   }
 
-  private generateToken(user: IUser | null): string {
-    const token = jwt.sign({ user }, process.env.JWT_SECRET as string, {
+  private generateAccessToken(user: IUser | null): string {
+    return jwt.sign({ user }, process.env.JWT_ACCESS_TOKEN_SECRET as string, {
       expiresIn: '1d',
     });
-    return token;
+  }
+
+  private generateRefreshToken(user: IUser | null): string {
+    return jwt.sign({ user }, process.env.JWT_REFRESH_TOKEN_SECRET as string, {
+      expiresIn: '7d',
+    });
   }
 }

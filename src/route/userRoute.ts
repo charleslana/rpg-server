@@ -24,4 +24,6 @@ userRoute
 
 userRoute.route('/auth').post(userAuthMiddleware(), controller.auth);
 
+userRoute.route('/refresh-token').post(controller.refreshAccessToken);
+
 export default userRoute;

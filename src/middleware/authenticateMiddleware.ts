@@ -23,7 +23,7 @@ const authenticateMiddleware = async (
     if (!token && bearer !== 'bearer') {
       return handleUnauthorizedError(next);
     }
-    const decode = jwt.verify(token, process.env.JWT_SECRET as string);
+    const decode = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET as string);
     if (!decode) {
       return handleUnauthorizedError(next);
     }
