@@ -35,6 +35,12 @@ export class UserCharacterService {
       pointsAvailable: this.calculateAttributePointAvailable(find),
       slot: find.slot,
       createdAt: find.createdAt,
+      character: {
+        id: find.character.id,
+        name: find.character.name,
+        description: find.character.description,
+        characterClass: find.character.characterClass,
+      },
     };
     return findMapped;
   }
@@ -54,6 +60,12 @@ export class UserCharacterService {
       pointsAvailable: this.calculateAttributePointAvailable(find),
       slot: find.slot,
       createdAt: find.createdAt,
+      character: {
+        id: find.character.id,
+        name: find.character.name,
+        description: find.character.description,
+        characterClass: find.character.characterClass,
+      },
     }));
     return findAllMapped;
   }

@@ -1,3 +1,10 @@
+import { IGetCharacter } from './ICharacter';
+import { UserCharacter } from '@prisma/client';
+
+export interface IUserCharacter extends UserCharacter {
+  character: IGetCharacter;
+}
+
 export interface IGetUserCharacter {
   id: number;
   level: number;
@@ -9,6 +16,7 @@ export interface IGetUserCharacter {
   attributePoint: number;
   attributePointUsed: number;
   pointsAvailable: number;
-  slot: number;
+  slot: number | null;
   createdAt: Date;
+  character: IGetCharacter;
 }

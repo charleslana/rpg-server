@@ -1,3 +1,4 @@
+import { IUserCharacter } from 'interface/IUserCharacter';
 import { PrismaClient, UserCharacter } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -20,9 +21,12 @@ export class UserCharacterRepository {
     return await prisma.userCharacter.findMany();
   }
 
-  public async findAllByUserId(userId: number): Promise<UserCharacter[]> {
+  public async findAllByUserId(userId: number): Promise<IUserCharacter[]> {
     return await prisma.userCharacter.findMany({
       where: { userId },
+      include: {
+        character: true,
+      },
     });
   }
 
@@ -32,9 +36,12 @@ export class UserCharacterRepository {
     });
   }
 
-  public async findByIdAndUserId(id: number, userId: number): Promise<UserCharacter | null> {
+  public async findByIdAndUserId(id: number, userId: number): Promise<IUserCharacter | null> {
     return await prisma.userCharacter.findUnique({
       where: { id, userId },
+      include: {
+        character: true,
+      },
     });
   }
 
