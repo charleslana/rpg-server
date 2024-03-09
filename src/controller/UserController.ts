@@ -73,6 +73,7 @@ export class UserController {
   }
 
   public async refreshAccessToken(request: Request, response: Response, next: NextFunction) {
+    logger.info('Authenticate user with refresh token');
     try {
       const refreshToken = request.body.refreshToken;
       if (!refreshToken) {
