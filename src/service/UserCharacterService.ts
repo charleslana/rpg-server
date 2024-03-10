@@ -1,6 +1,7 @@
 import HandlerError from 'handler/HandlerError';
 import HandlerSuccess from 'handler/HandlerSuccess';
 import { IGetUserCharacter } from 'interface/IUserCharacter';
+import { MessageEnum } from 'enum/MessageEnum';
 import { UserCharacter } from '@prisma/client';
 import { UserCharacterRepository } from 'repository/UserCharacterRepository';
 
@@ -77,7 +78,11 @@ export class UserCharacterService {
       throw new HandlerError('Você não pode excluir o único personagem em sua conta');
     }
     await this.repository.delete(id);
-    return new HandlerSuccess('Personagem excluído com sucesso');
+    return new HandlerSuccess(
+      'Personagem excluído com sucesso',
+      200,
+      MessageEnum.UserCharacterDeletedSuccess
+    );
   }
 
   private calculateAttributePointAvailable(data: UserCharacter): number {

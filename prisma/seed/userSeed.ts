@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   const currentDate = new Date();
-  currentDate.setDate(currentDate.getDate() + 1);
+  currentDate.setDate(currentDate.getDate() + 30);
   const users = [
     {
       email: 'email@email.com',

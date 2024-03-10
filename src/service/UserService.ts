@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { decrypt, encrypt } from 'utils/crypt';
 import { formatDate, generateRandomString } from 'utils/utils';
 import { ICreateUser, IGetUser, IUser } from 'interface/IUser';
+import { MessageEnum } from 'enum/MessageEnum';
 import { User } from '@prisma/client';
 import { UserRepository } from 'repository/UserRepository';
 
@@ -14,11 +15,11 @@ export class UserService {
   public async create(dto: ICreateUser): Promise<HandlerSuccess> {
     let exist = await this.repository.findByEmail(dto.email);
     if (exist) {
-      throw new HandlerError('E-mail já está cadastrado');
+      throw new HandlerError('E-mail já está cadastrado', 400, MessageEnum.EmailAlreadyExists);
     }
     exist = await this.repository.findByName(dto.name);
     if (exist) {
-      throw new HandlerError('Nome já está cadastrado');
+      throw new HandlerError('Nome já está cadastrado', 400, MessageEnum.NameAlreadyExists);
     }
     await this.repository.save({
       email: dto.email,
@@ -63,7 +64,7 @@ export class UserService {
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const find = await this.repository.findByEmail(email);
     if (!find) {
-      throw new HandlerError('Usuário ou senha inválida', 403);
+      throw new HandlerError('Usuário ou senha inválida', 403, MessageEnum.InvalidUserOrPassword);
     }
     this.validateUserLogin(find, password);
     const updated = await this.updateAuthToken(find);
@@ -99,13 +100,17 @@ export class UserService {
 
   private validateUserLogin(dto: User, password: string): void {
     const isPasswordValid = decrypt(password, dto.password);
+    if (!isPasswordValid) {
+      throw new HandlerError('Usuário ou senha inválida', 403, MessageEnum.InvalidUserOrPassword);
+    }
     const isUserBanned = dto.bannedTime != null && dto.bannedTime > new Date();
-    if (!isPasswordValid || isUserBanned) {
-      let errorMessage = 'Usuário ou senha inválida';
-      if (isUserBanned) {
-        errorMessage = `O usuário está banido até ${formatDate(dto.bannedTime as Date)})`;
-      }
-      throw new HandlerError(errorMessage, 403);
+    if (isUserBanned) {
+      throw new HandlerError(
+        `O usuário está banido até ${formatDate(dto.bannedTime as Date)}`,
+        403,
+        MessageEnum.UserBanned,
+        dto.bannedTime
+      );
     }
   }
 

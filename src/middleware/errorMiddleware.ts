@@ -10,12 +10,14 @@ const errorMiddleware = (
   _next: NextFunction
 ) => {
   const error = err.error || true;
+  const key = err.key;
+  const value = err.value;
   const message = err.message || 'Erro interno do servidor';
   const statusCode = err.statusCode || 500;
   if (statusCode === 500) {
     logger.error(message);
   }
-  return response.status(statusCode).json({ error, message });
+  return response.status(statusCode).json({ error, key, value, message });
 };
 
 export default errorMiddleware;
