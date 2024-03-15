@@ -4,7 +4,7 @@ import HandlerSuccess from 'handler/HandlerSuccess';
 import jwt from 'jsonwebtoken';
 import { decrypt, encrypt } from 'utils/crypt';
 import { formatDate, generateRandomString } from 'utils/utils';
-import { ICreateUser, IGetUser, IUser } from 'interface/IUser';
+import { ICreateUser, IGetUser, IUser, UserMe } from 'interface/IUser';
 import { MessageEnum } from 'enum/MessageEnum';
 import { User } from '@prisma/client';
 import { UserRepository } from 'repository/UserRepository';
@@ -27,6 +27,23 @@ export class UserService {
       password: encrypt(dto.password),
     } as User);
     return new HandlerSuccess('Cadastro de usuário efetuado com sucesso');
+  }
+
+  public async getMe(id: number): Promise<UserMe> {
+    const find = await this.repository.findById(id);
+    if (!find) {
+      throw new HandlerError('Usuário não encontrado');
+    }
+    const findMapped: UserMe = {
+      id: find.id,
+      name: find.name,
+      level: find.level,
+      gold: find.gold,
+      ruby: find.ruby,
+      experience: find.experience,
+      maxExperience: this.calculateMaxExperience(find.level),
+    };
+    return findMapped;
   }
 
   public async getById(id: number): Promise<IGetUser> {
@@ -131,5 +148,9 @@ export class UserService {
     return jwt.sign({ user }, process.env.JWT_REFRESH_TOKEN_SECRET as string, {
       expiresIn: '7d',
     });
+  }
+
+  private calculateMaxExperience(level: number): number {
+    return 50 * level;
   }
 }

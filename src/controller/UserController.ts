@@ -23,7 +23,7 @@ export class UserController {
   public async getMe(request: Request, response: Response, next: NextFunction) {
     logger.info(`Get user me ${request.user.id}`);
     try {
-      return response.status(200).json(await service.getById(request.user.id));
+      return response.status(200).json(await service.getMe(request.user.id));
     } catch (error) {
       next(error);
     }

@@ -20,3 +20,13 @@ export interface IUserAuth {
   email: string;
   password: string;
 }
+
+export interface UserMe {
+  id: number;
+  name: string;
+  level: number;
+  gold: number;
+  ruby: number;
+  experience: number;
+  maxExperience: number;
+}
