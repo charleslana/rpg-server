@@ -151,6 +151,6 @@ export class UserService {
   }
 
   private calculateMaxExperience(level: number): number {
-    return 50 * level;
+    return 100 * level;
   }
 }
