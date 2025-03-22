@@ -15,6 +15,8 @@ import { LocalMiddleware } from '@/middleware/local-middleware';
 import { ConfigModule } from '@nestjs/config';
 import { ClientValidationMiddleware } from '@/middleware/client-validation-middleware';
 import { UserStatisticModule } from './modules/user-statistic/user-statistic.module';
+import { TitleModule } from './modules/title/title.module';
+import { UserTitleModule } from './modules/user-title/user-title.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { UserStatisticModule } from './modules/user-statistic/user-statistic.mod
     UserAttributeModule,
     SocketModule,
     UserStatisticModule,
+    TitleModule,
+    UserTitleModule,
   ],
   controllers: [AppController, SwaggerJsonController],
   providers: [

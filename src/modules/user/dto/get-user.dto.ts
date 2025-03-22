@@ -5,9 +5,12 @@ import {
   GenderEnum,
   UserAttribute,
   UserStatistic,
+  UserTitle,
 } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 import { GetUserStatisticDto } from '@/modules/user-statistic/dto/get-user-statistic.dto';
+import { GetUserTitleDto } from '@/modules/user-title/dto/get-user-title.dto';
+import { calculateMaxLife } from '@/utils/utils';
 
 export class GetUserDto {
   @ApiProperty()
@@ -77,28 +80,42 @@ export class GetUserDto {
   @ApiProperty()
   @Expose()
   life: number;
-
   @ApiProperty({ nullable: true })
   @Expose()
   description: string | null;
-
   @ApiProperty()
   @Expose()
   createdAt: Date;
-
   @ApiProperty()
   @Expose()
   updatedAt: Date;
-
   @ApiProperty({ type: GetUserAttributeDto })
   @Expose()
   @Type(() => GetUserAttributeDto)
   attribute: UserAttribute;
-
   @ApiProperty({ type: GetUserStatisticDto })
   @Expose()
   @Type(() => GetUserStatisticDto)
   statistic: UserStatistic;
+  @ApiProperty({ type: GetUserTitleDto })
+  @Expose()
+  @Type(() => GetUserTitleDto)
+  titles: UserTitle[];
+
+  @ApiProperty()
+  @Expose()
+  get maxLife(): number {
+    return calculateMaxLife(this.level);
+  }
+
+  @ApiProperty()
+  @Expose()
+  get equippedTitle() {
+    if (Array.isArray(this.titles) && this.titles.length > 0) {
+      return this.titles.find((title) => title.equipped === true) || null;
+    }
+    return null;
+  }
 }
 
 export class GetUserExposeDto {

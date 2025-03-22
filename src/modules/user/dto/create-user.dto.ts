@@ -1,5 +1,6 @@
 import {
-  IsEmail, IsEmpty,
+  IsEmail,
+  IsEmpty,
   IsEnum,
   IsLowercase,
   IsNotEmpty,
@@ -28,6 +29,8 @@ export class CreateUserDto extends UserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @MinLength(3, { message: 'O nome deve ter pelo menos 3 caracteres' })
+  @MaxLength(50, { message: 'O nome não pode ter mais de 50 caracteres' })
   @Matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/, {
     message: 'O nome deve conter apenas letras e espaços',
   })
@@ -36,9 +39,10 @@ export class CreateUserDto extends UserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @MinLength(3, { message: 'O nickname deve ter pelo menos 3 caracteres' })
+  @MaxLength(20, { message: 'O nickname não pode ter mais de 20 caracteres' })
   @Matches(/^[A-Za-z0-9_]+$/, {
-    message:
-      'O nome do personagem só pode conter letras, números e underscore (_).',
+    message: 'O nickname só pode conter letras, números e underscore (_).',
   })
   nickname: string;
 

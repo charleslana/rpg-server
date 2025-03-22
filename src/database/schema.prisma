@@ -72,7 +72,7 @@ model UserAttribute {
   agility      Int  @default(1)
   intelligence Int  @default(1)
   endurance    Int  @default(1)
-  spendPoint   Int  @default(5) @map("spend_point")
+  spendPoint   Int  @default(0) @map("spend_point")
   user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       Int  @unique @map("user_id")
 

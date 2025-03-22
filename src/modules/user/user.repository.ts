@@ -51,7 +51,7 @@ export class UserRepository {
     return this.prisma.user.findFirst({
       where: {
         nickname: {
-          contains: nickname,
+          equals: nickname,
           mode: 'insensitive',
         },
       },
@@ -72,6 +72,12 @@ export class UserRepository {
       include: {
         attribute: true,
         statistic: true,
+        titles: {
+          where: { equipped: true },
+          include: {
+            title: true,
+          },
+        },
       },
     });
   }

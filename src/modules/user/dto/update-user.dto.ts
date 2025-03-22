@@ -3,7 +3,7 @@ import { Exclude } from 'class-transformer';
 import { UserDto } from './user.dto';
 import {
   IsEnum,
-  IsNotEmpty,
+  IsNotEmpty, IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -31,23 +31,25 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @MinLength(3, { message: 'O nickname deve ter pelo menos 3 caracteres' })
   @MaxLength(20, { message: 'O nickname não pode ter mais de 20 caracteres' })
-  @Matches(/^[a-zA-Z0-9]+( [a-zA-Z0-9]+)*$/, {
-    message:
-      'O nickname deve conter apenas letras, números e espaço, não pode começar ou terminar com espaço',
+  @Matches(/^[A-Za-z0-9_]+$/, {
+    message: 'O nickname só pode conter letras, números e underscore (_).',
   })
   nickname: string;
 
   @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   @IsEnum(GenderEnum)
   gender: GenderEnum;
 
   @ApiProperty()
+  @IsOptional()
   @IsNotEmpty()
   @IsEnum(CharacterClassEnum)
   characterClass: CharacterClassEnum;
 
   @ApiProperty()
+  @IsOptional()
   @IsString()
   avatar: string;
 

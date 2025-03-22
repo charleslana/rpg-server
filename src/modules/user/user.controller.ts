@@ -1,4 +1,4 @@
-import { AuthGuard } from '../auth/auth.guard';
+// import { AuthGuard } from '../auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { FilterUserDto } from './dto/filter-user.dto';
 import { PageDto } from '@/dto/page.dto';
@@ -36,6 +36,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { AuthCookieGuard } from '@/modules/auth/auth.cookie.guard';
 
 @ApiTags('User')
 @ApiHeader({
@@ -73,7 +74,7 @@ export class UserController {
   @ApiResponse({ status: 200, type: [GetUserDto] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard, new RoleGuard([RoleEnum.admin]))
+  @UseGuards(AuthCookieGuard, new RoleGuard([RoleEnum.admin]))
   @Get()
   public async getUsers(@Request() req: RequestExpress): Promise<GetUserDto[]> {
     this.logger.log(`getUsers: Request made to ${req.url}`);
@@ -86,7 +87,7 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard, new RoleGuard([RoleEnum.admin]))
+  @UseGuards(AuthCookieGuard, new RoleGuard([RoleEnum.admin]))
   @Delete(':id')
   public async deleteUser(
     @Param() params: FindOneParams,
@@ -105,7 +106,7 @@ export class UserController {
   @ApiResponse({ status: 200, type: GetUserDto })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthCookieGuard)
   @Put('change-password')
   public async updateUserPassword(
     @Body() updateUserPasswordDto: UpdateUserPasswordDto,
@@ -124,7 +125,7 @@ export class UserController {
   @ApiResponse({ status: 200, type: GetUserDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard, UserSocketExistsGuard)
+  @UseGuards(AuthCookieGuard, UserSocketExistsGuard)
   @Get('me')
   public async getMe(@Request() req: RequestExpress) {
     this.logger.log(`getMe: Request made to ${req.url}`);
@@ -144,7 +145,7 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthCookieGuard)
   @Post('filter')
   public async filterUsersPaginated(
     @Query() page: PageDto,
@@ -166,7 +167,7 @@ export class UserController {
   @ApiResponse({ status: 200, type: GetUserDto })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthCookieGuard)
   @Put('change-nickname')
   async updateNickname(
     @Body() updateUserDto: UpdateUserDto,
@@ -185,7 +186,7 @@ export class UserController {
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiBearerAuth()
-  @UseGuards(AuthGuard)
+  @UseGuards(AuthCookieGuard)
   @Get(':id')
   public async getUser(
     @Param() params: FindOneParams,
