@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleEnum {
+  admin
+  user
+}
+
+enum CharacterClassEnum {
+  attack
+  defense
+  magic
+  support
+}
+
+enum GenderEnum {
+  male
+  female
+}
+
+model User {
+  id             Int                @id @default(autoincrement())
+  email          String             @unique @db.VarChar(255)
+  password       String             @db.Text
+  bannedTime     DateTime?          @map("banned_time")
+  name           String             @db.VarChar(50)
+  nickname       String             @unique @db.VarChar(20)
+  gender         GenderEnum
+  avatar         String             @db.Text
+  characterClass CharacterClassEnum @map("character_class")
+  level          Int                @default(1)
+  gold           Int                @default(200)
+  credit         Int                @default(0)
+  emerald        Int                @default(0)
+  sapphire       Int                @default(0)
+  crystal        Int                @default(0)
+  diamond        Int                @default(0)
+  exp            Int                @default(0)
+  life           Int                @default(100)
+  description    String?            @db.VarChar(300)
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @default(now()) @updatedAt @map("updated_at")
+  roles          Role[]
+  attribute      UserAttribute?
+  statistic      UserStatistic?
+  titles         UserTitle[]
+
+  @@map(name: "tb_user")
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  name      RoleEnum @default(user)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map(name: "tb_user_role")
+}
+
+model UserAttribute {
+  id           Int  @id @default(autoincrement())
+  strength     Int  @default(1)
+  defense      Int  @default(1)
+  agility      Int  @default(1)
+  intelligence Int  @default(1)
+  endurance    Int  @default(1)
+  spendPoint   Int  @default(5) @map("spend_point")
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int  @unique @map("user_id")
+
+  @@map(name: "tb_user_attribute")
+}
+
+model UserStatistic {
+  id             Int  @id @default(autoincrement())
+  honorVictories Int  @default(0) @map("honor_victories")
+  totalBattles   Int  @default(0) @map("total_battles")
+  battlesWon     Int  @default(0) @map("battles_won")
+  battlesLost    Int  @default(0) @map("battles_lost")
+  battlesDraw    Int  @default(0) @map("battles_draw")
+  damageDone     Int  @default(0) @map("damage_done")
+  damageSuffered Int  @default(0) @map("damage_suffered")
+  goldWon        Int  @default(0) @map("gold_won")
+  goldLost       Int  @default(0) @map("gold_lost")
+  arenaPoints    Int  @default(0) @map("arena_points")
+  user           User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int  @unique @map("user_id")
+
+  @@map(name: "tb_user_statistic")
+}
+
+model Title {
+  id          Int       @id @default(autoincrement())
+  name        String
+  user        UserTitle @relation(fields: [userTitleId], references: [id], onDelete: Cascade)
+  userTitleId Int       @unique @map("user_title_id")
+
+  @@map(name: "tb_title")
+}
+
+model UserTitle {
+  id        Int      @id @default(autoincrement())
+  equipped  Boolean
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  title     Title?
+
+  @@map(name: "tb_user_title")
+}
