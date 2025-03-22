@@ -19,7 +19,7 @@ export class UpdateUserPasswordDto extends UserDto {
   @ApiProperty()
   @IsNotEmpty()
   @MinLength(6)
-  @MaxLength(30)
+  @MaxLength(50)
   newPassword: string;
 
   @Exclude()

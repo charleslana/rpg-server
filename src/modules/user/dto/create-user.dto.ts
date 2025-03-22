@@ -23,7 +23,7 @@ export class CreateUserDto extends UserDto {
   @ApiProperty()
   @IsNotEmpty()
   @MinLength(6)
-  @MaxLength(30)
+  @MaxLength(50)
   password: string;
 
   @ApiProperty()

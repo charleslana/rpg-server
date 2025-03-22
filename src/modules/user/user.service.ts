@@ -49,7 +49,7 @@ export class UserService {
   public async filterUsersPaginated(page: PageDto, dto?: FilterUserDto) {
     const findAllPaginated = await this.repository.findAllPaginatedAndFilter({
       page,
-      name: dto?.name,
+      nickname: dto?.nickname,
     });
     const filteredResults = findAllPaginated.results.map((user) => {
       return {

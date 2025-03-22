@@ -108,18 +108,21 @@ export class UserRepository {
 
   public async findAllPaginatedAndFilter(params: {
     page: PageDto;
-    name?: string;
+    nickname?: string;
   }) {
-    const { page, name } = params;
+    const { page, nickname } = params;
     const { page: currentPage, pageSize } = page;
     const offset = (currentPage - 1) * pageSize;
     const take = pageSize;
-    const where: Prisma.UserWhereInput = {
-      name,
-    };
-    if (name) {
-      where.name = {
-        contains: name,
+    // const where: Prisma.UserWhereInput = {
+    //   nickname: {
+    //     not: null,
+    //   },
+    // };
+    const where: Prisma.UserWhereInput = {};
+    if (nickname) {
+      where.nickname = {
+        contains: nickname,
         mode: 'insensitive',
       };
     }
