@@ -31,12 +31,23 @@ import { FindOneParams } from '@/modules/find-one.params';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiHeader,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 
 @ApiTags('User')
+@ApiHeader({
+  name: 'client_id',
+  required: true,
+  description: 'Client ID for authentication',
+})
+@ApiHeader({
+  name: 'client_secret',
+  required: true,
+  description: 'Client Secret for authentication',
+})
 @Controller('user')
 export class UserController {
   private readonly logger = new Logger(UserController.name);

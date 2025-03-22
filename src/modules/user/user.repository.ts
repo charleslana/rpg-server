@@ -7,7 +7,7 @@ import { PrismaService } from '@/database/prisma.service';
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  public save(params: { data: Prisma.UserCreateInput }) {
+  public async save(params: { data: Prisma.UserCreateInput }) {
     const { data } = params;
     return this.prisma.user.create({
       data: {
@@ -17,6 +17,14 @@ export class UserRepository {
         },
         statistic: {
           create: {},
+        },
+        titles: {
+          create: [
+            {
+              title: { connect: { id: 1 } },
+              equipped: true,
+            },
+          ],
         },
         roles: {
           create: {},

@@ -1,9 +1,10 @@
 import {
-  IsEmail,
+  IsEmail, IsEmpty,
   IsEnum,
   IsLowercase,
   IsNotEmpty,
   IsString,
+  Matches,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -15,6 +16,7 @@ export class CreateUserDto extends UserDto {
   @ApiProperty()
   @IsEmail()
   @IsLowercase()
+  @MaxLength(50)
   email: string;
 
   @ApiProperty()
@@ -26,11 +28,18 @@ export class CreateUserDto extends UserDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Matches(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/, {
+    message: 'O nome deve conter apenas letras e espaços',
+  })
   name: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
+  @Matches(/^[A-Za-z0-9_]+$/, {
+    message:
+      'O nome do personagem só pode conter letras, números e underscore (_).',
+  })
   nickname: string;
 
   @ApiProperty({ enum: GenderEnum })
@@ -44,5 +53,6 @@ export class CreateUserDto extends UserDto {
   characterClass: CharacterClassEnum;
 
   @ApiHideProperty()
+  @IsEmpty()
   avatar: string;
 }

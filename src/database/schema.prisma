@@ -98,10 +98,9 @@ model UserStatistic {
 }
 
 model Title {
-  id          Int       @id @default(autoincrement())
-  name        String
-  user        UserTitle @relation(fields: [userTitleId], references: [id], onDelete: Cascade)
-  userTitleId Int       @unique @map("user_title_id")
+  id         Int         @id @default(autoincrement())
+  name       String      @unique @db.VarChar(255)
+  userTitles UserTitle[] @relation("UserHasTitle")
 
   @@map(name: "tb_title")
 }
@@ -113,7 +112,9 @@ model UserTitle {
   userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-  title     Title?
+  title     Title    @relation("UserHasTitle", fields: [titleId], references: [id], onDelete: Cascade)
+  titleId   Int      @map("title_id")
 
+  @@unique([userId, titleId])
   @@map(name: "tb_user_title")
 }

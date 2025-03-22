@@ -11,7 +11,10 @@ import { AuthModule } from '@/modules/auth/auth.module';
 import { UserAttributeModule } from '@/modules/user-attribute/user-attribute.module';
 import { SocketModule } from '@/modules/socket/socket.module';
 import { SwaggerJsonController } from '@/swagger.controller';
-import { LocalMiddleware } from '@/local-middleware';
+import { LocalMiddleware } from '@/middleware/local-middleware';
+import { ConfigModule } from '@nestjs/config';
+import { ClientValidationMiddleware } from '@/middleware/client-validation-middleware';
+import { UserStatisticModule } from './modules/user-statistic/user-statistic.module';
 
 @Module({
   imports: [
@@ -22,10 +25,12 @@ import { LocalMiddleware } from '@/local-middleware';
         limit: 100,
       },
     ]),
+    ConfigModule.forRoot(),
     UserModule,
     AuthModule,
     UserAttributeModule,
     SocketModule,
+    UserStatisticModule,
   ],
   controllers: [AppController, SwaggerJsonController],
   providers: [
@@ -44,5 +49,9 @@ import { LocalMiddleware } from '@/local-middleware';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LocalMiddleware).forRoutes('api-docs-json');
+    consumer
+      .apply(ClientValidationMiddleware)
+      .exclude('/', '/api-docs', '/api-docs-json')
+      .forRoutes('*');
   }
 }

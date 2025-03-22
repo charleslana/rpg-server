@@ -17,8 +17,16 @@ export class UserService {
     if (exists) {
       throw new BusinessRuleException('O e-mail do usuário já existe');
     }
+    const nicknameExists = await this.repository.findByNickname(dto.nickname);
+    if (nicknameExists) {
+      throw new BusinessRuleException('O nickname do usuário já existe');
+    }
     dto.password = await dto.hashPassword(dto.password);
-    dto.avatar = 'default';
+    if (dto.gender === 'male') {
+      dto.avatar = 'default';
+    } else {
+      dto.avatar = 'default2';
+    }
     return this.repository.save({
       data: dto,
     });

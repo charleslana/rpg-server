@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Request as RequestExpress } from 'express';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiHeader, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -21,6 +21,16 @@ export class AuthController {
 
   @ApiOperation({ summary: 'authenticate user' })
   @ApiBody({ type: AuthDto })
+  @ApiHeader({
+    name: 'client_id',
+    required: true,
+    description: 'Client ID for authentication',
+  })
+  @ApiHeader({
+    name: 'client_secret',
+    required: true,
+    description: 'Client Secret for authentication',
+  })
   @ApiResponse({
     status: 200,
     description: 'Successfully logged in',

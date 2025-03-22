@@ -1,7 +1,13 @@
 import { Expose, Type } from 'class-transformer';
 import { GetUserAttributeDto } from '@/modules/user-attribute/dto/get-user-attribute.dto';
-import { CharacterClassEnum, GenderEnum, UserAttribute } from '@prisma/client';
+import {
+  CharacterClassEnum,
+  GenderEnum,
+  UserAttribute,
+  UserStatistic,
+} from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
+import { GetUserStatisticDto } from '@/modules/user-statistic/dto/get-user-statistic.dto';
 
 export class GetUserDto {
   @ApiProperty()
@@ -88,6 +94,11 @@ export class GetUserDto {
   @Expose()
   @Type(() => GetUserAttributeDto)
   attribute: UserAttribute;
+
+  @ApiProperty({ type: GetUserStatisticDto })
+  @Expose()
+  @Type(() => GetUserStatisticDto)
+  statistic: UserStatistic;
 }
 
 export class GetUserExposeDto {
