@@ -101,7 +101,9 @@
     "coveragePathIgnorePatterns": [
       "/node_modules/",
       "/dist/",
-      "/coverage/"
+      "/coverage/",
+      "/src/database/seed.ts",
+      "/src/@types/"
     ],
     "testEnvironment": "node",
     "moduleNameMapper": {

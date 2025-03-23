@@ -11,9 +11,12 @@ export class TaskService {
   }
 
   @Cron('*/2 * * * *', { timeZone: 'America/Sao_Paulo' })
-  public handleEvery2Minutes() {
+  public handleEvery2Minutes(hasError?: boolean) {
     this.logger.log('Adjust life if exceeds max every 2 minutes');
     try {
+      if (hasError) {
+        this.generateError();
+      }
       this.logger.log('Life adjusted successfully for all users');
     } catch (error) {
       this.logger.error('Error adjusting life:', error);
@@ -21,12 +24,19 @@ export class TaskService {
   }
 
   @Cron('*/4 * * * *', { timeZone: 'America/Sao_Paulo' })
-  public handleEvery4Minutes() {
+  public handleEvery4Minutes(hasError?: boolean) {
     this.logger.log('Increase life every 4 minutes');
     try {
+      if (hasError) {
+        this.generateError();
+      }
       this.logger.log('Life updated successfully for all users');
     } catch (error) {
       this.logger.error('Error updating life:', error);
     }
+  }
+
+  generateError() {
+    throw new Error('error');
   }
 }

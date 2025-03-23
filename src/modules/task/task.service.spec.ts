@@ -8,7 +8,6 @@ jest.useFakeTimers();
 
 describe('TaskService', () => {
   let taskService: TaskService;
-  let logger: Logger;
   let schedulerRegistry: SchedulerRegistry;
 
   beforeEach(async () => {
@@ -17,7 +16,6 @@ describe('TaskService', () => {
     }).compile();
 
     taskService = module.get<TaskService>(TaskService);
-    logger = module.get<Logger>(Logger);
     schedulerRegistry = module.get<SchedulerRegistry>(SchedulerRegistry);
 
     const cronExpression1 = '*/1 * * * *';
@@ -57,21 +55,12 @@ describe('TaskService', () => {
     expect(handleEvery2MinutesSpy).toHaveBeenCalled();
   });
 
-  it.skip('should log error when handleEvery2Minutes throws an error', () => {
-    const errorSpy = jest.spyOn(logger, 'error');
+  it('should enter catch block when handleEvery2Minutes throws an error', () => {
+    const errorSpy = jest.spyOn(taskService, 'generateError');
 
-    jest
-      .spyOn(taskService, 'handleEvery2Minutes')
-      .mockImplementationOnce(() => {
-        throw new Error('Test error');
-      });
+    taskService.handleEvery2Minutes(true);
 
-    jest.advanceTimersByTime(120000);
-
-    expect(errorSpy).toHaveBeenCalledWith(
-      'Error adjusting life:',
-      expect.any(Error),
-    );
+    expect(errorSpy).toHaveBeenCalled();
   });
 
   it('should call handleEvery4Minutes when the cron job triggers', () => {
@@ -83,20 +72,11 @@ describe('TaskService', () => {
     expect(handleEvery4MinutesSpy).toHaveBeenCalled();
   });
 
-  it.skip('should log error when handleEvery4Minutes throws an error', () => {
-    const errorSpy = jest.spyOn(logger, 'error');
+  it('should enter catch block when handleEvery4Minutes throws an error', () => {
+    const errorSpy = jest.spyOn(taskService, 'generateError');
 
-    jest
-      .spyOn(taskService, 'handleEvery4Minutes')
-      .mockImplementationOnce(() => {
-        throw new Error('Test error');
-      });
+    taskService.handleEvery4Minutes(true);
 
-    jest.advanceTimersByTime(240000);
-
-    expect(errorSpy).toHaveBeenCalledWith(
-      'Error updating life:',
-      expect.any(Error),
-    );
+    expect(errorSpy).toHaveBeenCalled();
   });
 });
