@@ -97,7 +97,6 @@ export class UserService {
     const existingUserWithName = await this.repository.findByNickname(
       dto.nickname,
     );
-    console.log('existingUserWithName', existingUserWithName);
     if (existingUserWithName && existingUserWithName.id !== existingUser.id) {
       throw new BusinessRuleException(
         'Nome de personagem do usuário já existe',

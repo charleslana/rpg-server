@@ -4,11 +4,11 @@ import { ApiProperty } from '@nestjs/swagger';
 export class GetTitleDto {
   @ApiProperty()
   @Expose()
-  name: number;
+  name: string;
 }
 
 export class GetTitleExposeDto {
   @ApiProperty()
   @Expose()
-  name: number;
+  name: string;
 }

@@ -104,3 +104,11 @@ npm run test:cov
 ```
 npx prisma studio
 ```
+
+## Dicas
+
+Remover comentários no webstorm, Ctrl + R no arquivo ou em todo lugar Ctrl + Shift + R
+
+```bash
+(/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/|[ \t]*//.*)
+```
