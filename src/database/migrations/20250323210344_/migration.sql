@@ -53,7 +53,7 @@ CREATE TABLE "tb_user_attribute" (
     "agility" INTEGER NOT NULL DEFAULT 1,
     "intelligence" INTEGER NOT NULL DEFAULT 1,
     "endurance" INTEGER NOT NULL DEFAULT 1,
-    "spend_point" INTEGER NOT NULL DEFAULT 5,
+    "spend_point" INTEGER NOT NULL DEFAULT 0,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "tb_user_attribute_pkey" PRIMARY KEY ("id")
@@ -80,8 +80,7 @@ CREATE TABLE "tb_user_statistic" (
 -- CreateTable
 CREATE TABLE "tb_title" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "user_title_id" INTEGER NOT NULL,
+    "name" VARCHAR(255) NOT NULL,
 
     CONSTRAINT "tb_title_pkey" PRIMARY KEY ("id")
 );
@@ -93,6 +92,7 @@ CREATE TABLE "tb_user_title" (
     "user_id" INTEGER NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "title_id" INTEGER NOT NULL,
 
     CONSTRAINT "tb_user_title_pkey" PRIMARY KEY ("id")
 );
@@ -110,7 +110,10 @@ CREATE UNIQUE INDEX "tb_user_attribute_user_id_key" ON "tb_user_attribute"("user
 CREATE UNIQUE INDEX "tb_user_statistic_user_id_key" ON "tb_user_statistic"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "tb_title_user_title_id_key" ON "tb_title"("user_title_id");
+CREATE UNIQUE INDEX "tb_title_name_key" ON "tb_title"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "tb_user_title_user_id_title_id_key" ON "tb_user_title"("user_id", "title_id");
 
 -- AddForeignKey
 ALTER TABLE "tb_user_role" ADD CONSTRAINT "tb_user_role_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "tb_user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -122,7 +125,7 @@ ALTER TABLE "tb_user_attribute" ADD CONSTRAINT "tb_user_attribute_user_id_fkey" 
 ALTER TABLE "tb_user_statistic" ADD CONSTRAINT "tb_user_statistic_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "tb_user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tb_title" ADD CONSTRAINT "tb_title_user_title_id_fkey" FOREIGN KEY ("user_title_id") REFERENCES "tb_user_title"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "tb_user_title" ADD CONSTRAINT "tb_user_title_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "tb_user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "tb_user_title" ADD CONSTRAINT "tb_user_title_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "tb_user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "tb_user_title" ADD CONSTRAINT "tb_user_title_title_id_fkey" FOREIGN KEY ("title_id") REFERENCES "tb_title"("id") ON DELETE CASCADE ON UPDATE CASCADE;
