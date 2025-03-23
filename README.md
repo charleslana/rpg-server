@@ -19,7 +19,7 @@ nest new nestjs-prisma --strict
 ## Docker compose
 
 ```
-docker-compose up -d
+docker compose --env-file .env -f Docker/docker-compose.yml up
 ```
 
 ## Init Prisma
