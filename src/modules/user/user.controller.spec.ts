@@ -21,6 +21,8 @@ const mockUserService = {
   updateUserPassword: jest.fn(),
   updateUserNickname: jest.fn(),
   filterUsersPaginated: jest.fn(),
+  checkExistsEmail: jest.fn(),
+  checkExistsNickname: jest.fn(),
 };
 
 const mockJwtService = {
@@ -191,5 +193,27 @@ describe('UserController', () => {
     } as Request;
 
     expect(await controller.getMe(request)).toEqual(loggedUser);
+  });
+
+  it('deve verificar se o email existe', async () => {
+    const email = 'test@example.com';
+    mockUserService.checkExistsEmail.mockResolvedValue(true);
+
+    expect(
+      await controller.checkExistsEmail({ email }, {
+        url: `/user/check-email/${email}`,
+      } as Request),
+    ).toEqual(true);
+  });
+
+  it('deve verificar se o nickname existe', async () => {
+    const nickname = 'testuser';
+    mockUserService.checkExistsNickname.mockResolvedValue(false);
+
+    expect(
+      await controller.checkExistsNickname({ nickname }, {
+        url: `/user/check-nickname/${nickname}`,
+      } as Request),
+    ).toEqual(false);
   });
 });

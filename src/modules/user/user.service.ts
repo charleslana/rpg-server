@@ -13,14 +13,8 @@ export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
   public async create(dto: CreateUserDto) {
-    const exists = await this.repository.findByEmail(dto.email);
-    if (exists) {
-      throw new BusinessRuleException('O e-mail do usuário já existe');
-    }
-    const nicknameExists = await this.repository.findByNickname(dto.nickname);
-    if (nicknameExists) {
-      throw new BusinessRuleException('O nickname do usuário já existe');
-    }
+    await this.checkExistsEmail(dto.email);
+    await this.checkExistsNickname(dto.nickname);
     dto.password = await dto.hashPassword(dto.password);
     if (dto.gender === 'male') {
       dto.avatar = 'default';
@@ -128,5 +122,21 @@ export class UserService {
       throw new BusinessRuleException('Usuário não encontrado pelo nome');
     }
     return find;
+  }
+
+  public async checkExistsEmail(email: string) {
+    const exists = await this.repository.findByEmail(email);
+    if (exists) {
+      throw new BusinessRuleException('O e-mail do usuário já existe');
+    }
+    return false;
+  }
+
+  public async checkExistsNickname(nickname: string) {
+    const nicknameExists = await this.repository.findByNickname(nickname);
+    if (nicknameExists) {
+      throw new BusinessRuleException('O nickname do usuário já existe');
+    }
+    return false;
   }
 }

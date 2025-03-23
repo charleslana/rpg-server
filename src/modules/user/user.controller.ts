@@ -37,6 +37,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthCookieGuard } from '@/modules/auth/auth.cookie.guard';
+import { FindEmailParams } from '@/modules/user/find-email-params';
+import { FindNicknameParams } from '@/modules/user/find-nickname-params';
 
 @ApiTags('User')
 @ApiHeader({
@@ -197,5 +199,35 @@ export class UserController {
     const { id } = params;
     const user = await this.userService.get(id);
     return plainToInstance(GetUserExposeDto, user);
+  }
+
+  @ApiOperation({ summary: 'Check exists email' })
+  @ApiResponse({ status: 200, type: Boolean })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @Get('check-email/:email')
+  public async checkExistsEmail(
+    @Param() params: FindEmailParams,
+    @Request() req: RequestExpress,
+  ) {
+    this.logger.log(`checkExistsEmail: Request made to ${req.url}`);
+    this.logger.log(`Data sent: ${JSON.stringify(params)}`);
+    const { email } = params;
+    const exists = await this.userService.checkExistsEmail(email);
+    return plainToInstance(Boolean, exists);
+  }
+
+  @ApiOperation({ summary: 'Check exists nickname' })
+  @ApiResponse({ status: 200, type: Boolean })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
+  @Get('check-nickname/:nickname')
+  public async checkExistsNickname(
+    @Param() params: FindNicknameParams,
+    @Request() req: RequestExpress,
+  ) {
+    this.logger.log(`checkExistsNickname: Request made to ${req.url}`);
+    this.logger.log(`Data sent: ${JSON.stringify(params)}`);
+    const { nickname } = params;
+    const exists = await this.userService.checkExistsNickname(nickname);
+    return plainToInstance(Boolean, exists);
   }
 }
