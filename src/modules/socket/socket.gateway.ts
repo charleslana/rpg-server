@@ -6,15 +6,17 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { SocketService } from './socket.service';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+const allowedOrigins = process.env.CORS_ORIGINS
+  ? process.env.CORS_ORIGINS.split(',').map((origin) => origin.trim())
+  : [];
 
 @WebSocketGateway({
   cors: {
-    origin: [
-      'http://localhost:8090',
-      'http://localhost:4000',
-      'http://localhost:4001',
-      '*',
-    ],
+    origin: allowedOrigins.length > 0 ? allowedOrigins : true,
     credentials: true,
   },
 })
